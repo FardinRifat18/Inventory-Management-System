@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }} - Inventory System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">{{ product.name }}</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <a href="{% url 'product_update' product.id %}" class="btn btn-sm btn-outline-secondary">
+                <i class="fas fa-edit"></i> Edit
+            </a>
+            <a href="{% url 'stock_adjustment' product.id %}" class="btn btn-sm btn-outline-info">
+                <i class="fas fa-exchange-alt"></i> Adjust Stock
+            </a>
+        </div>
+        <a href="{% url 'product_list' %}" class="btn btn-sm btn-outline-primary">
+            <i class="fas fa-arrow-left"></i> Back to Products
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Product Information</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <th width="30%">SKU:</th>
+                        <td>{{ product.sku }}</td>
+                    </tr>
+                    <tr>
+                        <th>Name:</th>
+                        <td>{{ product.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Description:</th>
+                        <td>{{ product.description|default:"-" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Category:</th>
+                        <td>{{ product.category.name|default:"-" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Supplier:</th>
+                        <td>
+                            {% if product.supplier %}
+                                <a href="{% url 'supplier_detail' product.supplier.id %}">{{ product.supplier.name }}</a>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Location:</th>
+                        <td>{{ product.location|default:"-" }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Stock Information</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <th width="40%">Current Stock:</th>
+                        <td>
+                            <span class="h5 {% if product.current_stock == 0 %}stock-out{% elif product.current_stock <= product.min_stock_level %}stock-low{% else %}stock-ok{% endif %}">
+                                {{ product.current_stock }}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Minimum Stock Level:</th>
+                        <td>{{ product.min_stock_level }}</td>
+                    </tr>
+                    <tr>
+                        <th>Maximum Stock Level:</th>
+                        <td>{{ product.max_stock_level }}</td>
+                    </tr>
+                    <tr>
+                        <th>Stock Status:</th>
+                        <td>
+                            {% if product.current_stock == 0 %}
+                                <span class="badge bg-danger">Out of Stock</span>
+                            {% elif product.current_stock <= product.min_stock_level %}
+                                <span class="badge bg-warning">Low Stock</span>
+                            {% else %}
+                                <span class="badge bg-success">In Stock</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Cost Price:</th>
+                        <td>${{ product.cost_price }}</td>
+                    </tr>
+                    <tr>
+                        <th>Selling Price:</th>
+                        <td>${{ product.selling_price }}</td>
+                    </tr>
+                    <tr>
+                        <th>Profit Margin:</th>
+                        <td>
+                            {% widthratio product.selling_price product.cost_price 1 as ratio %}
+                            {{ ratio|add:"-1"|floatformat:2 }}%
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Recent Stock Movements</h5>
+    </div>
+    <div class="card-body">
+        {% if stock_movements %}
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Quantity</th>
+                            <th>Reference</th>
+                            <th>Notes</th>
+                            <th>User</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for movement in stock_movements %}
+                        <tr>
+                            <td>{{ movement.created_at|date:"M d, Y H:i" }}</td>
+                            <td>
+                                <span class="badge {% if movement.movement_type == 'in' %}bg-success{% else %}bg-danger{% endif %}">
+                                    {{ movement.get_movement_type_display }}
+                                </span>
+                            </td>
+                            <td>{{ movement.quantity }}</td>
+                            <td>{{ movement.reference|default:"-" }}</td>
+                            <td>{{ movement.notes|default:"-" }}</td>
+                            <td>{{ movement.created_by.username }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted">No stock movements recorded for this product.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

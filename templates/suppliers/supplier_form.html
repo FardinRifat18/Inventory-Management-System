@@ -1,0 +1,260 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - Inventory Management System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">
+        <i class="fas fa-truck text-primary"></i>
+        {{ title }}
+    </h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{% url 'supplier_list' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Suppliers
+        </a>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-lg border-0">
+            <div class="card-header py-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <h5 class="m-0 font-weight-bold text-white text-center">
+                    <i class="fas fa-{% if title == 'Add Supplier' %}plus-circle{% else %}edit{% endif %}"></i>
+                    {{ title }}
+                </h5>
+            </div>
+            <div class="card-body p-5">
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <!-- Company Information -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0 text-primary">
+                                        <i class="fas fa-building"></i> Company Information
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="{{ form.name.id_for_label }}" class="form-label fw-bold text-dark">
+                                            Company Name *
+                                        </label>
+                                        {{ form.name }}
+                                        {% if form.name.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.name.errors }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="{{ form.contact_person.id_for_label }}" class="form-label fw-bold text-dark">
+                                            Contact Person *
+                                        </label>
+                                        {{ form.contact_person }}
+                                        {% if form.contact_person.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.contact_person.errors }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact Information -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0 text-primary">
+                                        <i class="fas fa-address-book"></i> Contact Information
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="{{ form.email.id_for_label }}" class="form-label fw-bold text-dark">
+                                            Email Address *
+                                        </label>
+                                        {{ form.email }}
+                                        {% if form.email.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.email.errors }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="{{ form.phone.id_for_label }}" class="form-label fw-bold text-dark">
+                                            Phone Number *
+                                        </label>
+                                        {{ form.phone }}
+                                        {% if form.phone.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.phone.errors }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Address -->
+                    <div class="row">
+                        <div class="col-12 mb-4">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0 text-primary">
+                                        <i class="fas fa-map-marker-alt"></i> Address Information
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="{{ form.address.id_for_label }}" class="form-label fw-bold text-dark">
+                                            Full Address
+                                        </label>
+                                        {{ form.address }}
+                                        {% if form.address.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.address.errors }}
+                                        </div>
+                                        {% endif %}
+                                        <small class="form-text text-muted">
+                                            Enter the complete address including street, city, state, and zip code
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a href="{% url 'supplier_list' %}" class="btn btn-lg btn-secondary me-md-2">
+                                    <i class="fas fa-times"></i> Cancel
+                                </a>
+                                <button type="submit" class="btn btn-lg btn-primary">
+                                    <i class="fas fa-save"></i> 
+                                    {% if title == 'Add Supplier' %}Create Supplier{% else %}Update Supplier{% endif %}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Help Section -->
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-gradient-info text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-lightbulb"></i> Quick Tips
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-building fa-2x text-primary"></i>
+                        </div>
+                        <h6>Company Details</h6>
+                        <p class="small text-muted">Provide the official company name and primary contact person</p>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-phone fa-2x text-success"></i>
+                        </div>
+                        <h6>Contact Info</h6>
+                        <p class="small text-muted">Ensure email and phone are accurate for order communications</p>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-map fa-2x text-warning"></i>
+                        </div>
+                        <h6>Address</h6>
+                        <p class="small text-muted">Include complete address for shipping and documentation</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.form-control {
+    border-radius: 10px;
+    border: 2px solid #e9ecef;
+    padding: 12px 15px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.form-label {
+    margin-bottom: 8px;
+}
+
+.btn {
+    border-radius: 10px;
+    padding: 12px 30px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.card-header {
+    border-radius: 15px 15px 0 0 !important;
+}
+
+.shadow-lg {
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add styling to form fields
+    const formControls = document.querySelectorAll('.form-control');
+    formControls.forEach(control => {
+        control.classList.add('form-control-lg');
+    });
+    
+    // Form validation
+    const forms = document.querySelectorAll('.needs-validation');
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+});
+</script>
+{% endblock %}

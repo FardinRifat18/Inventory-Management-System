@@ -1,0 +1,240 @@
+{% extends 'base.html' %}
+
+{% block title %}Suppliers - Inventory Management System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">
+        <i class="fas fa-truck text-primary"></i>
+        Suppliers
+    </h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{% url 'supplier_create' %}" class="btn btn-primary">
+            <i class="fas fa-plus-circle"></i> Add New Supplier
+        </a>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Total Suppliers
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ suppliers.count }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-truck fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Active Products
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {% with total_products=0 %}
+                                {% for supplier in suppliers %}
+                                    {% total_products=total_products|add:supplier.product_set.count %}
+                                {% endfor %}
+                                {{ total_products }}
+                            {% endwith %}
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-boxes fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <h6 class="m-0 font-weight-bold text-white">
+            <i class="fas fa-list"></i> Supplier List
+        </h6>
+    </div>
+    <div class="card-body">
+        {% if suppliers %}
+        <div class="table-responsive">
+            <table class="table table-hover table-striped" id="dataTable">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Contact Person</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Products</th>
+                        <th>Joined</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for supplier in suppliers %}
+                    <tr>
+                        <td>
+                            <strong>{{ supplier.name }}</strong>
+                        </td>
+                        <td>{{ supplier.contact_person }}</td>
+                        <td>
+                            <a href="mailto:{{ supplier.email }}" class="text-decoration-none">
+                                <i class="fas fa-envelope text-primary"></i> {{ supplier.email }}
+                            </a>
+                        </td>
+                        <td>
+                            <a href="tel:{{ supplier.phone }}" class="text-decoration-none">
+                                <i class="fas fa-phone text-success"></i> {{ supplier.phone }}
+                            </a>
+                        </td>
+                        <td>
+                            <span class="badge badge-pill badge-info">
+                                {{ supplier.product_set.count }} products
+                            </span>
+                        </td>
+                        <td>{{ supplier.created_at|date:"M d, Y" }}</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a href="{% url 'supplier_detail' supplier.pk %}" class="btn btn-sm btn-info" 
+                                   data-bs-toggle="tooltip" title="View Details">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{% url 'supplier_update' supplier.pk %}" class="btn btn-sm btn-warning"
+                                   data-bs-toggle="tooltip" title="Edit Supplier">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'supplier_delete' supplier.pk %}" class="btn btn-sm btn-danger"
+                                   data-bs-toggle="tooltip" title="Delete Supplier">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <div class="mb-4">
+                <i class="fas fa-truck fa-4x text-muted"></i>
+            </div>
+            <h4 class="text-muted">No Suppliers Found</h4>
+            <p class="text-muted">Get started by adding your first supplier.</p>
+            <a href="{% url 'supplier_create' %}" class="btn btn-primary btn-lg mt-3">
+                <i class="fas fa-plus-circle"></i> Add Your First Supplier
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Quick Action Buttons -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header bg-gradient-info text-white">
+                <h6 class="m-0 font-weight-bold">
+                    <i class="fas fa-bolt"></i> Quick Actions
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-4 mb-3">
+                        <a href="{% url 'supplier_create' %}" class="btn btn-primary btn-lg w-100 py-3">
+                            <i class="fas fa-plus fa-2x mb-2"></i><br>
+                            Add New Supplier
+                        </a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a href="{% url 'product_create' %}" class="btn btn-success btn-lg w-100 py-3">
+                            <i class="fas fa-box fa-2x mb-2"></i><br>
+                            Add Product
+                        </a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a href="{% url 'dashboard' %}" class="btn btn-info btn-lg w-100 py-3">
+                            <i class="fas fa-tachometer-alt fa-2x mb-2"></i><br>
+                            Back to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border: none;
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.border-left-primary {
+    border-left: 4px solid #4e73df;
+}
+
+.border-left-success {
+    border-left: 4px solid #1cc88a;
+}
+
+.border-left-info {
+    border-left: 4px solid #36b9cc;
+}
+
+.border-left-warning {
+    border-left: 4px solid #f6c23e;
+}
+
+.btn-group .btn {
+    border-radius: 8px;
+    margin: 0 2px;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0,123,255,0.1);
+    transform: scale(1.01);
+    transition: all 0.2s ease;
+}
+
+.badge-pill {
+    border-radius: 50rem;
+    padding: 0.5em 0.8em;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+    
+    // Add animation to table rows
+    const tableRows = document.querySelectorAll('tbody tr');
+    tableRows.forEach((row, index) => {
+        row.style.animationDelay = `${index * 0.1}s`;
+        row.classList.add('fade-in');
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,347 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - Inventory System{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5 bg-light">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-header bg-gradient-primary text-white py-4 rounded-top">
+                    <div class="text-center">
+                        <i class="fas fa-user-plus fa-2x mb-3"></i>
+                        <h3 class="card-title mb-0">Create Account</h3>
+                        <p class="mb-0 opacity-75">Join our Inventory Management System</p>
+                    </div>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        {% if form.errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Please correct the errors below:</strong>
+                            <ul class="mb-0 mt-2">
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        <li>{{ field.label }}: {{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                                {% for error in form.non_field_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        {% endif %}
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_first_name" class="form-label">
+                                    <i class="fas fa-user me-2 text-primary"></i>First Name
+                                </label>
+                                <input type="text" name="first_name" class="form-control form-control-lg" id="id_first_name" 
+                                       placeholder="Enter your first name" required>
+                                <div class="form-text">Your given name</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="id_last_name" class="form-label">
+                                    <i class="fas fa-user me-2 text-primary"></i>Last Name
+                                </label>
+                                <input type="text" name="last_name" class="form-control form-control-lg" id="id_last_name" 
+                                       placeholder="Enter your last name" required>
+                                <div class="form-text">Your family name</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_username" class="form-label">
+                                <i class="fas fa-at me-2 text-primary"></i>Username
+                            </label>
+                            <input type="text" name="username" class="form-control form-control-lg" id="id_username" 
+                                   placeholder="Choose a username" required>
+                            <div class="form-text">This will be your unique identifier</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_email" class="form-label">
+                                <i class="fas fa-envelope me-2 text-primary"></i>Email Address
+                            </label>
+                            <input type="email" name="email" class="form-control form-control-lg" id="id_email" 
+                                   placeholder="Enter your email" required>
+                            <div class="form-text">We'll never share your email</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_password1" class="form-label">
+                                <i class="fas fa-lock me-2 text-primary"></i>Password
+                            </label>
+                            <input type="password" name="password1" class="form-control form-control-lg" id="id_password1" 
+                                   placeholder="Create a strong password" required>
+                            <div class="form-text">
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Your password must contain at least 8 characters, including letters and numbers.
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_password2" class="form-label">
+                                <i class="fas fa-lock me-2 text-primary"></i>Confirm Password
+                            </label>
+                            <input type="password" name="password2" class="form-control form-control-lg" id="id_password2" 
+                                   placeholder="Repeat your password" required>
+                            <div class="form-text">Please confirm your password</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="terms" required>
+                                <label class="form-check-label" for="terms">
+                                    I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> 
+                                    and <a href="#" class="text-decoration-none">Privacy Policy</a>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg py-3 fw-bold">
+                                <i class="fas fa-user-plus me-2"></i>Create Account
+                            </button>
+                        </div>
+
+                        <div class="text-center">
+                            <p class="mb-0">
+                                Already have an account? 
+                                <a href="{% url 'login' %}" class="text-decoration-none fw-bold text-primary">Sign In</a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Features Section -->
+            <div class="row mt-4 text-center">
+                <div class="col-md-4 mb-3">
+                    <div class="card border-0 bg-transparent">
+                        <div class="card-body">
+                            <i class="fas fa-boxes fa-2x text-primary mb-3"></i>
+                            <h6 class="card-title">Track Inventory</h6>
+                            <p class="card-text small text-muted">Manage your stock levels efficiently</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card border-0 bg-transparent">
+                        <div class="card-body">
+                            <i class="fas fa-chart-line fa-2x text-success mb-3"></i>
+                            <h6 class="card-title">Generate Reports</h6>
+                            <p class="card-text small text-muted">Get insights with detailed analytics</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card border-0 bg-transparent">
+                        <div class="card-body">
+                            <i class="fas fa-bell fa-2x text-warning mb-3"></i>
+                            <h6 class="card-title">Smart Alerts</h6>
+                            <p class="card-text small text-muted">Never run out of stock again</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+.card {
+    border: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+}
+
+.form-control {
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.bg-light {
+    background-color: #f8fafc !important;
+    min-height: 100vh;
+}
+
+.text-primary {
+    color: #667eea !important;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.alert {
+    border: none;
+    border-radius: 0.5rem;
+}
+
+.alert-danger {
+    background-color: #fed7d7;
+    color: #c53030;
+}
+
+.feature-card {
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-3px);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Password strength indicator
+    const password1 = document.getElementById('id_password1');
+    const password2 = document.getElementById('id_password2');
+    
+    if (password1) {
+        password1.addEventListener('input', function() {
+            const strength = checkPasswordStrength(this.value);
+            updatePasswordStrengthIndicator(strength);
+        });
+    }
+    
+    if (password2) {
+        password2.addEventListener('input', function() {
+            checkPasswordMatch();
+        });
+    }
+    
+    function checkPasswordStrength(password) {
+        let strength = 0;
+        
+        if (password.length >= 8) strength++;
+        if (password.match(/[a-z]/)) strength++;
+        if (password.match(/[A-Z]/)) strength++;
+        if (password.match(/[0-9]/)) strength++;
+        if (password.match(/[^a-zA-Z0-9]/)) strength++;
+        
+        return strength;
+    }
+    
+    function updatePasswordStrengthIndicator(strength) {
+        let indicator = document.getElementById('password-strength');
+        if (!indicator) {
+            indicator = document.createElement('div');
+            indicator.id = 'password-strength';
+            indicator.className = 'mt-2';
+            password1.parentNode.appendChild(indicator);
+        }
+        
+        let message = '';
+        let color = '';
+        
+        if (strength === 0) {
+            message = '';
+        } else if (strength <= 2) {
+            message = 'Weak password';
+            color = 'text-danger';
+        } else if (strength <= 4) {
+            message = 'Good password';
+            color = 'text-warning';
+        } else {
+            message = 'Strong password';
+            color = 'text-success';
+        }
+        
+        indicator.innerHTML = `<small class="${color}"><i class="fas fa-shield-alt me-1"></i>${message}</small>`;
+    }
+    
+    function checkPasswordMatch() {
+        const confirmIndicator = document.getElementById('password-match');
+        if (!confirmIndicator) {
+            const newIndicator = document.createElement('div');
+            newIndicator.id = 'password-match';
+            newIndicator.className = 'mt-2';
+            password2.parentNode.appendChild(newIndicator);
+        }
+        
+        if (password1.value !== password2.value && password2.value !== '') {
+            confirmIndicator.innerHTML = '<small class="text-danger"><i class="fas fa-times-circle me-1"></i>Passwords do not match</small>';
+        } else if (password2.value !== '') {
+            confirmIndicator.innerHTML = '<small class="text-success"><i class="fas fa-check-circle me-1"></i>Passwords match</small>';
+        } else {
+            confirmIndicator.innerHTML = '';
+        }
+    }
+    
+    // Form validation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        let valid = true;
+        const requiredFields = form.querySelectorAll('[required]');
+        
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                valid = false;
+                field.classList.add('is-invalid');
+            } else {
+                field.classList.remove('is-invalid');
+            }
+        });
+        
+        if (password1.value !== password2.value) {
+            valid = false;
+            password2.classList.add('is-invalid');
+        } else {
+            password2.classList.remove('is-invalid');
+        }
+        
+        const terms = document.getElementById('terms');
+        if (!terms.checked) {
+            valid = false;
+            terms.classList.add('is-invalid');
+        } else {
+            terms.classList.remove('is-invalid');
+        }
+        
+        if (!valid) {
+            e.preventDefault();
+            // Scroll to first error
+            const firstError = form.querySelector('.is-invalid');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

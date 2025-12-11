@@ -1,0 +1,281 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ supplier.name }} - Supplier Details{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">
+        <i class="fas fa-truck text-primary"></i>
+        {{ supplier.name }}
+    </h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <a href="{% url 'supplier_update' supplier.pk %}" class="btn btn-warning">
+                <i class="fas fa-edit"></i> Edit Supplier
+            </a>
+            <a href="{% url 'supplier_list' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Supplier Information Card -->
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <h6 class="m-0 font-weight-bold text-white">
+                    <i class="fas fa-info-circle"></i> Supplier Information
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td class="font-weight-bold text-primary">Company Name:</td>
+                                <td>{{ supplier.name }}</td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold text-primary">Contact Person:</td>
+                                <td>{{ supplier.contact_person }}</td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold text-primary">Email:</td>
+                                <td>
+                                    <a href="mailto:{{ supplier.email }}" class="text-decoration-none">
+                                        <i class="fas fa-envelope text-primary"></i> {{ supplier.email }}
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold text-primary">Phone:</td>
+                                <td>
+                                    <a href="tel:{{ supplier.phone }}" class="text-decoration-none">
+                                        <i class="fas fa-phone text-success"></i> {{ supplier.phone }}
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td class="font-weight-bold text-primary">Member Since:</td>
+                                <td>{{ supplier.created_at|date:"F d, Y" }}</td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold text-primary">Total Products:</td>
+                                <td>
+                                    <span class="badge badge-pill badge-info">
+                                        {{ products.count }} products
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold text-primary">Status:</td>
+                                <td>
+                                    <span class="badge badge-pill badge-success">
+                                        <i class="fas fa-check-circle"></i> Active
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Address Section -->
+                {% if supplier.address %}
+                <div class="mt-4">
+                    <h6 class="font-weight-bold text-primary">
+                        <i class="fas fa-map-marker-alt"></i> Address
+                    </h6>
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <p class="mb-0">{{ supplier.address|linebreaks }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions Card -->
+    <div class="col-lg-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 bg-gradient-success text-white">
+                <h6 class="m-0 font-weight-bold">
+                    <i class="fas fa-bolt"></i> Quick Actions
+                </h6>
+            </div>
+            <div class="card-body text-center">
+                <a href="{% url 'product_create' %}" class="btn btn-primary btn-block mb-3">
+                    <i class="fas fa-plus-circle"></i> Add Product from this Supplier
+                </a>
+                <a href="mailto:{{ supplier.email }}" class="btn btn-info btn-block mb-3">
+                    <i class="fas fa-envelope"></i> Send Email
+                </a>
+                <a href="tel:{{ supplier.phone }}" class="btn btn-success btn-block mb-3">
+                    <i class="fas fa-phone"></i> Call Supplier
+                </a>
+                <a href="{% url 'supplier_update' supplier.pk %}" class="btn btn-warning btn-block mb-3">
+                    <i class="fas fa-edit"></i> Edit Information
+                </a>
+            </div>
+        </div>
+
+        <!-- Supplier Stats Card -->
+        <div class="card shadow">
+            <div class="card-header py-3 bg-gradient-info text-white">
+                <h6 class="m-0 font-weight-bold">
+                    <i class="fas fa-chart-pie"></i> Supplier Stats
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-boxes fa-3x text-info"></i>
+                    </div>
+                    <h3 class="text-primary">{{ products.count }}</h3>
+                    <p class="text-muted">Total Products</p>
+                    
+                    {% with low_stock=0 out_of_stock=0 %}
+                        {% for product in products %}
+                            {% if product.current_stock == 0 %}
+                                {% out_of_stock=out_of_stock|add:1 %}
+                            {% elif product.current_stock <= product.min_stock %}
+                                {% low_stock=low_stock|add:1 %}
+                            {% endif %}
+                        {% endfor %}
+                        
+                        <div class="row mt-3">
+                            <div class="col-6">
+                                <div class="border-right">
+                                    <h5 class="text-warning">{{ low_stock }}</h5>
+                                    <small class="text-muted">Low Stock</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <h5 class="text-danger">{{ out_of_stock }}</h5>
+                                <small class="text-muted">Out of Stock</small>
+                            </div>
+                        </div>
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Products from this Supplier -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header py-3" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <h6 class="m-0 font-weight-bold text-white">
+                    <i class="fas fa-boxes"></i> Products from {{ supplier.name }}
+                </h6>
+            </div>
+            <div class="card-body">
+                {% if products %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Product Name</th>
+                                <th>SKU</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Current Stock</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in products %}
+                            <tr>
+                                <td>
+                                    <strong>{{ product.name }}</strong>
+                                    {% if product.description %}
+                                    <br><small class="text-muted">{{ product.description|truncatewords:10 }}</small>
+                                    {% endif %}
+                                </td>
+                                <td><code>{{ product.sku }}</code></td>
+                                <td>
+                                    {% if product.category %}
+                                    <span class="badge badge-secondary">{{ product.category.name }}</span>
+                                    {% else %}
+                                    <span class="text-muted">No Category</span>
+                                    {% endif %}
+                                </td>
+                                <td>${{ product.price }}</td>
+                                <td>{{ product.current_stock }}</td>
+                                <td>
+                                    {% if product.current_stock == 0 %}
+                                    <span class="badge badge-danger">Out of Stock</span>
+                                    {% elif product.current_stock <= product.min_stock %}
+                                    <span class="badge badge-warning">Low Stock</span>
+                                    {% else %}
+                                    <span class="badge badge-success">In Stock</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'product_detail' product.pk %}" class="btn btn-sm btn-info">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <div class="mb-4">
+                        <i class="fas fa-box-open fa-4x text-muted"></i>
+                    </div>
+                    <h4 class="text-muted">No Products Found</h4>
+                    <p class="text-muted">This supplier doesn't have any products yet.</p>
+                    <a href="{% url 'product_create' %}" class="btn btn-primary mt-3">
+                        <i class="fas fa-plus-circle"></i> Add First Product
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border: none;
+    border-radius: 15px;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.badge-pill {
+    border-radius: 50rem;
+    padding: 0.5em 0.8em;
+}
+
+.table-borderless td {
+    border: none;
+    padding: 8px 0;
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+}
+
+.border-right {
+    border-right: 1px solid #dee2e6;
+}
+</style>
+{% endblock %}
